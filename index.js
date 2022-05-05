@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express()
 
@@ -16,16 +16,43 @@ app.use(express.json());
 
 
 
-const uri = `mongodb+srv://${process.env.S3_BUCKET}:${process.env.SECRET_KEY}@cluster0.mp3wx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+//const uri = `mongodb+srv://${process.env.S3_BUCKET}:${process.env.SECRET_KEY}@cluster0.mp3wx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
+const uri = `mongodb://${process.env.S3_BUCKET}:${process.env.SECRET_KEY}@cluster0-shard-00-00.mp3wx.mongodb.net:27017,cluster0-shard-00-01.mp3wx.mongodb.net:27017,cluster0-shard-00-02.mp3wx.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-im576i-shard-0&authSource=admin&retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
+async function run() {
+    try {
+        await client.connect();
+        const productCollection = client.db('musafir').collection('product');
+        console.log(' Musafir Server Traveling');
 
-    console.log("Musafr Db Connected");
-    // perform actions on the collection object
-    client.close();
-});
+        app.get('/product', async (req, res) => {
+            const query = {};
+            const cursor = productCollection.find(query);
+            const products = await cursor.toArray();
+            res.send(products)
+        });
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const product = await productCollection.findOne(query);
+            res.send(product);
+        });
 
+        //post
+        app.post('/product', async (req, res) => {
+            const newInventory = req.body;
+            const result = await productCollection.insertOne(newInventory);
+            res.send(result);
+        })
+
+    }
+    finally {
+
+    }
+
+}
+run().catch(console.dir);
 
 //
 app.get('/', (req, res) => {

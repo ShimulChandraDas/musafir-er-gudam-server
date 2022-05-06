@@ -32,7 +32,7 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products)
         });
-        app.get('/product/:id', async (req, res) => {
+        app.get('/inventory/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const product = await productCollection.findOne(query);
@@ -48,7 +48,7 @@ async function run() {
 
 
         //Update Quantity
-        app.put('/product/:id', async (req, res) => {
+        app.put('/inventory/:id', async (req, res) => {
             const id = req.params.id;
             const updatedQuantity = req.body;
             const filter = { _id: ObjectId(id) };
@@ -61,8 +61,6 @@ async function run() {
             };
             const result = await productCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
-
-
         })
 
         //DELETE

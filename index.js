@@ -7,8 +7,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 
 
-//musafirdb
-//bILdnIM9YRI1v4lU
+
 
 //middleware
 app.use(cors());

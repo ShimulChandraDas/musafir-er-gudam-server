@@ -83,6 +83,11 @@ app.get('/', (req, res) => {
     res.send("Musafir is Traveling")
 });
 
+//test heroku
+app.get('/test', (req, res) => {
+    res.send("Test successful")
+});
+
 app.listen(port, () => {
     console.log("Listening to port", port);
 })

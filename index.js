@@ -60,7 +60,7 @@ async function run() {
             const result = await productCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
-        //DELiVered
+        DELiVered
         app.put('/product/:id', async (req, res) => {
             const id = req.params.id;
             const updatedQuantity = req.body;

@@ -24,13 +24,14 @@ async function run() {
         await client.connect();
         const productCollection = client.db('musafir').collection('product');
         console.log(' Musafir Server Traveling');
-
+        //get
         app.get('/product', async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
             const products = await cursor.toArray();
             res.send(products)
         });
+        //get
         app.get('/inventory/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -60,6 +61,7 @@ async function run() {
             const result = await productCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
+
         // DeliVered
         app.put('/product/:id', async (req, res) => {
             const id = req.params.id;
@@ -67,9 +69,7 @@ async function run() {
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
             const updatedDoc = {
-                $set: {
-                    quantity: delivered.quantity
-                }
+                $set: delivered
             };
             const result = await productCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
